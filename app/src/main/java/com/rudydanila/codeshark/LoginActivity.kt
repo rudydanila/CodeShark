@@ -46,9 +46,11 @@ import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialCustomException
 import androidx.credentials.exceptions.NoCredentialException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.rudydanila.codeshark.ui.theme.CodeSharkTheme
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.security.SecureRandom
 import java.util.Base64
 
@@ -114,14 +116,8 @@ fun BottomSheet(webClientId: String) {
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun LogInUI(webClientId: String) {
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-    val onClick: () -> Unit = { /* ... ваша логика входа ... */ }
-
-    // 1. Объявляем ДВА отдельных состояния для полей Email и Password
     var emailInput by remember { mutableStateOf("") }
     var passwordInput by remember { mutableStateOf("") }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -155,13 +151,33 @@ fun LogInUI(webClientId: String) {
 
         Spacer(modifier = Modifier.height(32.dp))
 
+        val coroutineScope = rememberCoroutineScope()
+        val context = LocalContext.current
+        val onClick: () -> Unit = {
+            val signInWithGoogleOption = GetSignInWithGoogleOption
+                .Builder(serverClientId = webClientId)
+                .setNonce(generateSecureRandomNonce())
+                .build()
+
+            val request = GetCredentialRequest.Builder()
+                .addCredentialOption(signInWithGoogleOption)
+                .build()
+
+            coroutineScope.launch {
+                signIn(request, context)
+            }
+        }
+
         Image(
             painter = painterResource(id = R.drawable.siwg_button),
-            contentDescription = "Sign in with Google Button",
+            contentDescription = "Sign in with Google",
             modifier = Modifier
-                .wrapContentSize(Alignment.Center)
-                .clickable(enabled = true, onClick = onClick)
+                .fillMaxWidth()
+                .height(48.dp)
+                .clickable(onClick = onClick)
         )
+
+
     }
 }
 
