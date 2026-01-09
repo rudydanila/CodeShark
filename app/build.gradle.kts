@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+
 android {
     namespace = "com.rudydanila.codeshark"
     compileSdk {
@@ -55,8 +56,11 @@ dependencies {
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.ui)
-    implementation("androidx.navigation:navigation-compose:2.7.0")
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation("com.github.skydoves:landscapist-coil3:${rootProject.extra["landscapistCoil3Version"]}")
+    implementation("androidx.credentials:credentials:1.5.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

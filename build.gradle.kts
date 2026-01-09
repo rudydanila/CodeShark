@@ -4,3 +4,4 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.compose) apply false
 }
+val landscapistCoil3Version by extra("2.4.5")
