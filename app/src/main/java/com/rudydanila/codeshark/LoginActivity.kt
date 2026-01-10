@@ -3,11 +3,15 @@ package com.rudydanila.codeshark
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.rudydanila.codeshark.ui.theme.CodeSharkTheme
+import kotlinx.coroutines.launch
+
 
 class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,9 +21,9 @@ class LoginActivity : ComponentActivity() {
 
         setContent {
             CodeSharkTheme {
-
                 val navController = rememberNavController()
-                val context = LocalContext.current
+                val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+                val scope = rememberCoroutineScope()
 
                 NavHost(
                     navController = navController,
@@ -27,7 +31,7 @@ class LoginActivity : ComponentActivity() {
                 ) {
                     composable("login") {
                         LoginScreen(
-                            context = context,
+                            context = this@LoginActivity,
                             onLoginSuccess = { email ->
                                 navController.navigate("knowledge")
                             }
@@ -42,12 +46,43 @@ class LoginActivity : ComponentActivity() {
                         }
                     }
                     composable("home") {
-                        HomeScreen(context)
+                        HomeScreen(
+                            drawerState = drawerState,
+                            onBackClick = {
+                                if (drawerState.isOpen) {
+                                    scope.launch { drawerState.close() }
+                                } else {
+                                    finish()
+                                }
+                            },
+                            onLevelClick = { levelId ->
+                                if (levelId == 1) {
+                                    navController.navigate("exercise1")
+                                } else if (levelId == 2) {
+                                    navController.navigate("exercise2")
+                                } else if (levelId == 3) {
+                                    navController.navigate("exercise3")
+                                } else if (levelId == 4) {
+                                    navController.navigate("exercise4")
+                                }
+                            }
+                        )
+                    }
+
+                    composable("exercise1") {
+                        ExerciseScreen1(onBackClick = { navController.popBackStack() })
+                    }
+                    composable("exercise2") {
+                        ExerciseScreen2(onBackClick = { navController.popBackStack() })
+                    }
+                    composable("exercise3") {
+                        ExerciseScreen3(onBackClick = { navController.popBackStack() })
+                    }
+                    composable("exercise4") {
+                        ExerciseScreen4(onBackClick = { navController.popBackStack() })
                     }
                 }
-
             }
         }
     }
 }
-

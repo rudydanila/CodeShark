@@ -124,15 +124,11 @@ fun LoginScreen(
                     ) {
                         Text("Войти", color = Color.White, fontSize = 14.sp)
                     }
-
-                    // Ошибка
                     errorMessage?.let {
                         Text(it, color = Color.Red, modifier = Modifier.padding(16.dp))
                     }
 
                     Spacer(modifier = Modifier.height(20.dp))
-
-                    // Ссылка на регистрацию
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.fillMaxWidth()
